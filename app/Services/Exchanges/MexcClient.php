@@ -22,7 +22,6 @@ class MexcClient implements ExchangeClientInterface
             'signature' => $signature,
         ]);
 
-        dump($response->json());
-        return [];
+        return $response->json(['balance', []]);
     }
 }
