@@ -15,7 +15,7 @@ export const Wallet = (props: Props) => {
     return (
         <div className={styles.container}>
             <table className={styles.table}>
-                <thead className={styles.thead}>
+                <thead>
                     <tr>
                         <th>asset</th>
                         <th>free</th>

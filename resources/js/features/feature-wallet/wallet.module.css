@@ -9,11 +9,11 @@
     max-width: 960px;
 }
 
-.thead {
+.table thead {
     font-size: 22px;
 }
 
-.tbody {
+.table tbody {
     font-size: 18px;
 }
 
