@@ -10,15 +10,15 @@ class MexcClient implements ExchangeClientInterface
     public function __construct(
         private string $apiKey,
         private string $apiSecret,
-    ){}
+    ) {}
 
     /**
-    * @return array<int, array{asset: string, free: string, locked: string, available: string}>
-    */
+     * @return array<int, array{asset: string, free: string, locked: string, available: string}>
+     */
     public function getBalances(): array
     {
         $timestamp = now()->timestamp * 1000;
-        $query = 'timestamp=' . $timestamp;
+        $query = 'timestamp='.$timestamp;
         $signature = hash_hmac('sha256', $query, $this->apiSecret);
         $response = Http::withHeader('X-MEXC-APIKEY', $this->apiKey)->get('https://api.mexc.com/api/v3/account', [
             'timestamp' => $timestamp,
