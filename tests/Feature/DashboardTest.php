@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Exchange;
 use App\Models\User;
 
 test('guests are redirected to the login page', function () {
@@ -8,6 +9,7 @@ test('guests are redirected to the login page', function () {
 });
 
 test('authenticated users can visit the dashboard', function () {
+    Exchange::factory()->create(['name' => 'MEXC']);
     $user = User::factory()->create();
     $this->actingAs($user);
 
