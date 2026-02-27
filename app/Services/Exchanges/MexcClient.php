@@ -13,7 +13,7 @@ class MexcClient implements ExchangeClientInterface
     ){}
 
     /**
-    * @returns array<int, array{asset: string, free: string, locked: string, available: string}>
+    * @return array<int, array{asset: string, free: string, locked: string, available: string}>
     */
     public function getBalances(): array
     {
