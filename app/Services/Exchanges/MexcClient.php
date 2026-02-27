@@ -12,6 +12,9 @@ class MexcClient implements ExchangeClientInterface
         private string $apiSecret,
     ){}
 
+    /**
+    * @returns array<int, array{asset: string, free: string, locked: string, available: string}>
+    */
     public function getBalances(): array
     {
         $timestamp = now()->timestamp * 1000;
