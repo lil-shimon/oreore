@@ -1,4 +1,6 @@
 import { Head } from '@inertiajs/react';
+import { Wallet } from '@/features/feature-wallet/wallet.component';
+import type { Balance } from '@/features/feature-wallet/wallet.component';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
@@ -10,12 +12,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard({ balances }) {
-    console.log('balances', balances);
+export default function Dashboard({ balances }: { balances: Balance[] }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"></div>
+            <Wallet balances={balances} />
         </AppLayout>
     );
 }
