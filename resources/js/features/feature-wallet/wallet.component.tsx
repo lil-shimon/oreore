@@ -23,7 +23,7 @@ export const Wallet = (props: Props) => {
                         <th>available</th>
                     </tr>
                 </thead>
-                <tbody className={styles.tbody}>
+                <tbody>
                     {balances.map((b) => (
                         <tr key={b.asset}>
                             <td>{b.asset}</td>
