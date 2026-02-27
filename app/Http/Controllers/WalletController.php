@@ -17,32 +17,44 @@ class WalletController extends Controller
 
     public function index(): Response
     {
+        $exchange = Exchange::where('name', 'MEXC')->firstOrFail();
+        $today = today();
+        $record = WalletRecord::where('exchange_id', $exchange->id)->whereDate('created_at', $today)->with('walletTokens.token')->first();
+
+        if ($record) {
+            $balances = $record->walletTokens->map(fn ($wt) => [
+                'asset' => $wt->token->symbol,
+                // dupulicated
+                'free' => $wt->available,
+                'locked' => $wt->locked,
+                'available' => $wt->available,
+            ])->toArray();
+
+            return inertia('dashboard', [
+                'balances' => $balances,
+            ]);
+        }
+
         $balances = $this->mexcClient->getBalances();
 
-        $today = today();
-        $exchange = Exchange::where('name', 'MEXC')->firstOrFail();
-        $exists = WalletRecord::where('exchange_id', $exchange->id)->whereDate('created_at', $today)->exists();
+        DB::transaction(function () use ($exchange, $balances) {
 
-        if (! $exists) {
-            DB::transaction(function () use ($exchange, $balances) {
+            $record = WalletRecord::create(['exchange_id' => $exchange->id]);
+            foreach ($balances as $balance) {
+                $token = Token::where('symbol', $balance['asset'])->first();
 
-                $record = WalletRecord::create(['exchange_id' => $exchange->id]);
-                foreach ($balances as $balance) {
-                    $token = Token::where('symbol', $balance['asset'])->first();
-
-                    // TODO: create token
-                    if (! $token) {
-                        continue;
-                    }
-
-                    $record->walletTokens()->create([
-                        'token_id' => $token->id,
-                        'available' => $balance['free'],
-                        'locked' => $balance['locked'],
-                    ]);
+                // TODO: create token
+                if (! $token) {
+                    continue;
                 }
-            });
-        }
+
+                $record->walletTokens()->create([
+                    'token_id' => $token->id,
+                    'available' => $balance['free'],
+                    'locked' => $balance['locked'],
+                ]);
+            }
+        });
 
         return inertia('dashboard', [
             'balances' => $balances,
