@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Exchanges\MexcClient;
+use Inertia\Response;
 
 class WalletController extends Controller
 {
@@ -10,7 +11,7 @@ class WalletController extends Controller
         private MexcClient $mexcClient
     ) {}
 
-    public function index()
+    public function index(): Response
     {
         $data = $this->mexcClient->getBalances();
 
