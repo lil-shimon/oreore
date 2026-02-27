@@ -1,3 +1,32 @@
 .container {
     display: flex;
+    padding: 32px 52px;
+    justify-content: center;
+}
+
+.table {
+    width: 100%;
+    max-width: 960px;
+}
+
+.thead {
+    font-size: 22px;
+}
+
+.tbody {
+    font-size: 18px;
+}
+
+.table th,
+.table td {
+    padding: 8px 16px;
+    text-align: left;
+}
+
+.table thead tr {
+    border-bottom: 2px solid #333;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #444;
 }

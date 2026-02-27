@@ -14,8 +14,8 @@ export const Wallet = (props: Props) => {
 
     return (
         <div className={styles.container}>
-            <table>
-                <thead>
+            <table className={styles.table}>
+                <thead className={styles.thead}>
                     <tr>
                         <th>asset</th>
                         <th>free</th>
@@ -23,7 +23,7 @@ export const Wallet = (props: Props) => {
                         <th>available</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className={styles.tbody}>
                     {balances.map((b) => (
                         <tr key={b.asset}>
                             <td>{b.asset}</td>
