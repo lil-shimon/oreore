@@ -14,20 +14,26 @@ export const Wallet = (props: Props) => {
 
     return (
         <div className={styles.container}>
-            <div>
-                <div>asset</div>
-                <div>free</div>
-                <div>locked</div>
-                <div>available</div>
-            </div>
-            {balances.map((b) => (
-                <div key={b.asset}>
-                    <span>{b.asset}</span>
-                    <span>{b.free}</span>
-                    <span>{b.locked}</span>
-                    <span>{b.available}</span>
-                </div>
-            ))}
+            <table>
+                <thead>
+                    <tr>
+                        <th>asset</th>
+                        <th>free</th>
+                        <th>locked</th>
+                        <th>available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {balances.map((b) => (
+                        <tr key={b.asset}>
+                            <td>{b.asset}</td>
+                            <td>{b.free}</td>
+                            <td>{b.locked}</td>
+                            <td>{b.available}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
