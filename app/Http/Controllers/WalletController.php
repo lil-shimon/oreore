@@ -15,7 +15,7 @@ class WalletController extends Controller
     {
         $data = $this->mexcClient->getBalances();
 
-        return inertia('wallet/index', [
+        return inertia('dashboard', [
             'balances' => $data,
         ]);
     }
