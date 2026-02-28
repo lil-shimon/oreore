@@ -30,3 +30,11 @@
 .table tbody tr {
     border-bottom: 1px solid #444;
 }
+
+.positive {
+    color: #4caf7d;
+}
+
+.negative {
+    color: #e05c5c;
+}
