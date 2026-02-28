@@ -28,33 +28,30 @@ class WalletController extends Controller
                 'free' => $wt->available,
                 'locked' => $wt->locked,
                 'available' => $wt->available,
-            ])->toArray();
-
-            return inertia('dashboard', [
-                'balances' => $balances,
             ]);
-        }
+        } else {
 
-        $balances = $this->mexcClient->getBalances();
+            $balances = collect($this->mexcClient->getBalances());
 
-        DB::transaction(function () use ($exchange, $balances) {
+            DB::transaction(function () use ($exchange, $balances) {
 
-            $record = WalletRecord::create(['exchange_id' => $exchange->id]);
-            foreach ($balances as $balance) {
-                $token = Token::where('symbol', $balance['asset'])->first();
+                $record = WalletRecord::create(['exchange_id' => $exchange->id]);
+                foreach ($balances as $balance) {
+                    $token = Token::where('symbol', $balance['asset'])->first();
 
-                // TODO: create token
-                if (! $token) {
-                    continue;
+                    // TODO: create token
+                    if (! $token) {
+                        continue;
+                    }
+
+                    $record->walletTokens()->create([
+                        'token_id' => $token->id,
+                        'available' => $balance['free'],
+                        'locked' => $balance['locked'],
+                    ]);
                 }
-
-                $record->walletTokens()->create([
-                    'token_id' => $token->id,
-                    'available' => $balance['free'],
-                    'locked' => $balance['locked'],
-                ]);
-            }
-        });
+            });
+        }
 
         return inertia('dashboard', [
             'balances' => $balances,
