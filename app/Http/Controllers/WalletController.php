@@ -59,7 +59,7 @@ class WalletController extends Controller
             $asset = $b['asset'];
             $price = $asset === 'USDT' ? 1.0 : (float) ($prices->get($asset.'USDT')['price'] ?? 0);
 
-            return [...$b, 'usdt_value' => $price * (float) $asset];
+            return [...$b, 'usdt_value' => $price * (float) $b['free']];
         });
 
         return inertia('dashboard', [

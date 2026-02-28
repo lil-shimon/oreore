@@ -5,6 +5,7 @@ export type Balance = {
     free: string;
     locked: string;
     available: string;
+    usdt_value: string;
 };
 
 type Props = { balances: Balance[] };
@@ -21,6 +22,7 @@ export const Wallet = (props: Props) => {
                         <th>free</th>
                         <th>locked</th>
                         <th>available</th>
+                        <th>value</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +32,7 @@ export const Wallet = (props: Props) => {
                             <td>{b.free}</td>
                             <td>{b.locked}</td>
                             <td>{b.available}</td>
+                            <td>{b.usdt_value}</td>
                         </tr>
                     ))}
                 </tbody>
