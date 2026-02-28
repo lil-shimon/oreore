@@ -27,4 +27,11 @@ class MexcClient implements ExchangeClientInterface
 
         return $response->json('balances', []);
     }
+
+    public function getTickerPrices(): array
+    {
+        $response = Http::get('https://api.mexc.com/api/v3/ticker/price');
+
+        return $response->json();
+    }
 }
