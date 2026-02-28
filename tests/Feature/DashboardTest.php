@@ -14,6 +14,7 @@ test('authenticated users can visit the dashboard', function () {
 
     $this->mock(MexcClient::class, function ($mock) {
         $mock->shouldReceive('getBalances')->andReturn([]);
+        $mock->shouldReceive('getTickerPrices')->andReturn([]);
     });
 
     $user = User::factory()->create();
