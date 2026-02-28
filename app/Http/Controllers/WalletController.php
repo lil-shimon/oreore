@@ -53,6 +53,15 @@ class WalletController extends Controller
             });
         }
 
+        $prices = collect($this->mexcClient->getTickerPrices())->keyBy('symbol');
+
+        $balances = $balances->map(function ($b) use ($prices) {
+            $asset = $b['asset'];
+            $price = $asset === 'USDT' ? 1.0 : (float) ($prices->get($asset.'USDT')['price'] ?? 0);
+
+            return [...$b, 'usdt_value' => (float) $price * $asset];
+        });
+
         return inertia('dashboard', [
             'balances' => $balances,
         ]);
