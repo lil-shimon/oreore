@@ -12,12 +12,7 @@ class FetchWalletBalancesCommand extends Command
 
     protected $description = 'Fetch and store wallet balances from MEXC';
 
-    public function __construct(private FetchWalletBalancesAction $action)
-    {
-        parent::__construct();
-    }
-
-    public function handle(): int
+    public function handle(FetchWalletBalancesAction $action): int
     {
         $exchange = Exchange::where('name', 'MEXC')->first();
 
@@ -27,7 +22,7 @@ class FetchWalletBalancesCommand extends Command
             return self::FAILURE;
         }
 
-        $record = $this->action->execute($exchange);
+        $record = $action->execute($exchange);
 
         $this->info("Wallet record saved. ID: {$record->id}");
 
