@@ -2,70 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\FetchWalletBalancesAction;
 use App\Models\Exchange;
-use App\Models\Token;
 use App\Models\WalletRecord;
-use App\Services\Exchanges\MexcClient;
-use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 
 class WalletController extends Controller
 {
     public function __construct(
-        private MexcClient $mexcClient
+        private FetchWalletBalancesAction $action
     ) {}
 
     public function index(): Response
     {
         $exchange = Exchange::where('name', 'MEXC')->firstOrFail();
-        $today = today();
         $yesterday = today()->subDay();
 
-        $prices = collect($this->mexcClient->getTickerPrices())->keyBy('symbol');
+        $record = $this->action->execute($exchange);
+        $record->load('walletTokens.token');
 
-        $record = WalletRecord::where('exchange_id', $exchange->id)
-            ->whereDate('created_at', $today)
-            ->with('walletTokens.token')
-            ->first();
-
-        if ($record) {
-            $balances = $record->walletTokens->map(fn ($wt) => [
-                'asset' => $wt->token->symbol,
-                'available' => $wt->available,
-                'locked' => $wt->locked,
-                'usdt_value' => (float) $wt->usdt_value,
-            ]);
-        } else {
-            $balances = collect($this->mexcClient->getBalances())->map(function ($b) use ($prices) {
-                $asset = $b['asset'];
-                $price = $asset === 'USDT' ? 1.0 : (float) ($prices->get($asset.'USDT')['price'] ?? 0);
-
-                return [
-                    'asset' => $asset,
-                    'available' => $b['free'],
-                    'locked' => $b['locked'],
-                    'usdt_value' => $price * (float) $b['free'],
-                ];
-            });
-
-            DB::transaction(function () use ($exchange, $balances) {
-                $record = WalletRecord::create(['exchange_id' => $exchange->id]);
-                foreach ($balances as $balance) {
-                    $token = Token::where('symbol', $balance['asset'])->first();
-
-                    if (! $token) {
-                        continue;
-                    }
-
-                    $record->walletTokens()->create([
-                        'token_id' => $token->id,
-                        'available' => $balance['available'],
-                        'locked' => $balance['locked'],
-                        'usdt_value' => $balance['usdt_value'],
-                    ]);
-                }
-            });
-        }
+        $balances = $record->walletTokens->map(fn ($wt) => [
+            'asset' => $wt->token->symbol,
+            'available' => $wt->available,
+            'locked' => $wt->locked,
+            'usdt_value' => (float) $wt->usdt_value,
+        ]);
 
         $yesterdayRecord = WalletRecord::where('exchange_id', $exchange->id)
             ->whereDate('created_at', $yesterday)
